@@ -36,27 +36,34 @@ function getWorksheet(workSheetName) {
 // 取得表單的 headers(資料的意義)及最新一筆回覆資料
 function getFormLatestData() {
   var form = FormApp.openById(config.formId);
-  var headers = ["date", "email", ...form.getItems().map((e) => e.getTitle())];
-  var values = [
-    headers,
-    ...form
-      .getResponses()
-      .map((formResponse) => {
-        const time = formatDate(formResponse.getTimestamp());
-        return formResponse.getItemResponses().reduce(
-          (o, itemResponse) => {
-            const response = itemResponse.getResponse();
-            return Object.assign(o, {
-              [itemResponse.getItem().getTitle()]: Array.isArray(response) ? response.join(",") : response,
-            });
-          },
-          { email: formResponse.getRespondentEmail(), date: time }
-        );
-      })
-      .map((o) => headers.map((t) => o[t] || "")),
+  // ["date", "email", ...]
+  var headers = ["date", "email",
+    ...form.getItems().filter(e => {
+      // 若為非問題項目則 skip
+      if(e.getType() === FormApp.ItemType.IMAGE
+          || e.getType() ===  FormApp.ItemType.PAGE_BREAK
+          || e.getType() ===  FormApp.ItemType.SECTION_HEADER
+          || e.getType() ===  FormApp.ItemType.VIDEO) {
+            return false;
+      }
+      return true;
+    }).map(e => e.getTitle())
   ];
+  var responses = form.getResponses();
+  var formResponse = responses[responses.length - 1].getItemResponses().reduce(
+      (o, itemResponse) => {
+        const response = itemResponse.getResponse();
+        return Object.assign(o, {
+          [itemResponse.getItem().getTitle()]: Array.isArray(response) ? response.join(",") : response,
+        });
+      }, {
+        date: formatDate(responses[responses.length - 1].getTimestamp()),
+        email: responses[responses.length - 1].getRespondentEmail() 
+      }
+  );
 
-  return [headers, values[values.length - 1]];
+  var values = [headers, headers.map((t) => formResponse[t] || "")]
+  return values;
 }
 
 // 以指定工作表內的特定行(以表頭名稱指定)為來源更新表單選項
@@ -109,7 +116,7 @@ function closeForm() {
 // 更新選項 & 檢查是否關閉表單(可設定依時間自動觸發)
 function autoUpdateForm() {
   // 更新所有在 config.gs 內設定的問題及選項
-  for(var i = 0; i< config.updateTargets.length ; i++) {
+  for(var i = 0; i < config.updateTargets.length ; i++) {
     var target = config.updateTargets[i];
     updateChoice(target[0], target[1], target[2]);
   }

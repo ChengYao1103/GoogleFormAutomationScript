@@ -12,7 +12,7 @@
 
 ### 設定方法
 
-1. 建立表單與試算表，表單**不可**與試算表連結
+1. 建立表單與試算表，表單可與試算表連結，但**透過此腳本寫入資料的目標工作表必須與表單連結的工作表不同**
 2. 試算表內格式需參照[此影片](https://youtu.be/CPa26jRHHhQ?si=XOVOXD1joU-yFW-L)，表頭列名稱可彈性設定
 3. 若要啟用刪除重複填寫功能則表單需設定開啟收集電子郵件地址
 4. 在表單頁開啟**指令碼編輯器**
@@ -33,7 +33,7 @@
 | :---------------------------: | :-----: | :---------------------------------------------------- | :---------------------------------- |
 |            formId             | string  | 表單 ID                                               | ![](./image/formId.jpg)             |
 |         spreadsheetId         | string  | 試算表 ID                                             | ![](./image/spreadsheetId.jpg)      |
-|       formDataWorksheet       | string  | 儲存表單資料的工作表名稱                              | "表單回覆 1"                        |
+|       formDataWorksheet       | string  | 儲存表單資料的工作表名稱                              | "表單回覆 2"                        |
 |     formDataEmailColName      | string  | 表單資料工作表內 email 行的表頭名稱                   | "電子郵件地址"                      |
 | enableDeleteDuplicateResponse | boolean | 啟用/停用刪除重複填寫資料功能                         | true                                |
 |      enableAutoCloseForm      | boolean | 啟用/停用自動關閉表單功能                             | true                                |

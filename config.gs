@@ -2,7 +2,7 @@ function getConfig() {
   const config = {
     formId: "",
     spreadsheetId: "",
-    formDataWorksheet: "表單回應 1",
+    formDataWorksheet: "表單回應 2",
     formDataEmailColName: "電子郵件地址",
     enableDeleteDuplicateResponse: true,
     enableAutoCloseForm: true,
